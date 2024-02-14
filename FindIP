@@ -1,0 +1,40 @@
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.util.Properties;
+
+public class HostnameResolver {
+
+    public static void main(String[] args) {
+        try {
+            // Load properties from file
+            Properties properties = new Properties();
+            FileInputStream input = new FileInputStream("hostname.properties");
+            properties.load(input);
+            input.close();
+
+            // Iterate through the properties and resolve hostnames to IP addresses
+            for (String key : properties.stringPropertyNames()) {
+                String hostname = properties.getProperty(key);
+                String ipAddress = resolveIPAddress(hostname);
+
+                System.out.println("Hostname: " + hostname + " | IP Address: " + ipAddress);
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static String resolveIPAddress(String hostname) {
+        String ipAddress;
+        try {
+            InetAddress inetAddress = InetAddress.getByName(hostname);
+            ipAddress = inetAddress.getHostAddress();
+        } catch (IOException e) {
+            // Handle the exception, e.g., log the error or return a default value
+            ipAddress = "Unknown IP Address";
+        }
+        return ipAddress;
+    }
+}
